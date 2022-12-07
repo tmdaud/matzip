@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>맛을 담다. 맛집</title>
+    <link rel="stylesheet" th:href="@{/resources/stylesheets/common.css}">
+    <link rel="stylesheet" th:href="@{/resources/stylesheets/index.css}">
+    <script type="text/javascript"
+            src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=b01c4322cc3c31b99147af039973f9dc"></script>
+    <script src="https://kit.fontawesome.com/282afddd53.js" crossorigin="anonymous"></script>
+    <script defer th:src="@{/resources/scripts/index.js}"></script>
+</head>
+<body>
+<section class="list-container" id="listContainer">
+    <form class="search-form" id="searchForm">
+        <span class="title">MATZIP</span>
+        <label class="label">
+            <span hidden>검색어</span>
+            <input autofocus class="input" maxlength="100" name="keyword" placeholder="맛집을 검색해 보세요." type="text">
+        </label>
+        <div class="button-container">
+            <a href="https://kauth.kakao.com/oauth/authorize?client_id=137cbbb98ac38f2199a20dd210d752d8&redirect_uri=http://localhost:8080/member/kakao&response_type=code"
+               target="_blank" class="button" id="loginButton" th:if="${session.user == null}">로그인</a>
+            <a class="button" id="logoutButton"
+               th:href="@{'/member/logout'}"
+               th:if="${session.user != null}">로그아웃</a>
+        </div>
+    </form>
+    <ul class="list" id="list">
+        <li class="item">
+            <span class="info">
+                <span class="name-container">
+                    <span class="name">스톤승현's Love House</span>
+                    <span class="category">한식</span>
+                </span>
+                <span class="rating-container">
+                    <span class="star-container">
+                        <i class="star filled fa-solid fa-star"></i>
+                        <i class="star filled fa-solid fa-star"></i>
+                        <i class="star filled fa-solid fa-star"></i>
+                        <i class="star filled fa-solid fa-star"></i>
+                        <i class="star fa-solid fa-star"></i>
+                    </span>
+                    <span class="score">4.9</span>
+                    <span class="count">7건</span>
+                    <span class="review-count">리뷰 5</span>
+                </span>
+                <span class="open-container">
+                    <span class="working">영업 중</span>
+                    <span class="hour">00:00에 영업 시작</span>
+                </span>
+                <span class="address-container">대구 북구 팔거천동로24길 40 102동 1412호</span>
+                <span class="contact">010-6405-6966</span>
+            </span>
+            <img alt="ss" class="image" th:src="@{/resources/images/stonesh.jpg}">
+        </li>
+        <li class="item">
+            <span class="info">
+                <span class="name-container">
+                    <span class="name">스톤승현's Love House</span>
+                    <span class="category">한식</span>
+                </span>
+                <span class="rating-container">
+                    <span class="star-container">
+                        <i class="star filled fa-solid fa-star"></i>
+                        <i class="star filled fa-solid fa-star"></i>
+                        <i class="star filled fa-solid fa-star"></i>
+                        <i class="star filled fa-solid fa-star"></i>
+                        <i class="star fa-solid fa-star"></i>
+                    </span>
+                    <span class="score">4.9</span>
+                    <span class="count">7건</span>
+                    <span class="review-count">리뷰 5</span>
+                </span>
+                <span class="open-container">
+                    <span class="working isClose">영업 전</span>
+                    <span class="hour">00:00에 영업 시작</span>
+                </span>
+                <span class="address-container">대구 북구 팔거천동로24길 40 102동 1412호</span>
+                <span class="contact">010-6405-6966</span>
+            </span>
+            <img alt="ss" class="image" th:src="@{/resources/images/stonesh.jpg}">
+        </li>
+    </ul>
+</section>
+<section class="detail-container" id="detailContainer">
+    <div class="title-container">
+        <span class="title" rel="title"></span>
+        <a href="#" class="close-button" rel="closeButton">
+            <i class="icon fa-solid fa-x"></i>
+        </a>
+    </div>
+    <div class="image-container" rel="imageContainer">
+        <div class="no-image">
+            <i class="icon fa-solid fa-circle-exclamation"></i>
+            <span class="text">아직 등록된 이미지가 없습니다.</span>
+        </div>
+        <img alt="" src="https://cdn.mindgil.com/news/photo/202004/69068_2873_1455.jpg" class="image">
+        <img alt="" src="https://t1.daumcdn.net/cfile/tistory/99D032335986CD3B11" class="image">
+        <img alt=""
+             src="https://media.triple.guide/triple-cms/c_limit,f_auto,h_1024,w_1024/12e66f74-ca37-4a97-b19e-8e9231541a4a.jpeg"
+             class="image">
+        <img alt="" src="https://t1.daumcdn.net/cfile/tistory/998019475A445E7A2F" class="image">
+        <img alt="" src="https://health.chosun.com/site/data/img_dir/2021/03/31/2021033102448_0.jpg" class="image">
+        <img alt=""
+             src="https://pds.joongang.co.kr/news/component/htmlphoto_mmdata/202108/21/dfe71d7b-39d6-479a-9882-86cff4c67c36.jpg"
+             class="image">
+        <img alt=""
+             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOndR1gcmm-IOfeXBgLwW8S7-Dqq_OGYjgua3CopJ3cnVnBcMGw6hKdOE2AH5jl6P-esw&usqp=CAU"
+             class="image">
+        <img alt=""
+             src="https://img1.daumcdn.net/thumb/R1280x0.fjpg/?fname=http://t1.daumcdn.net/brunch/service/user/P7F/image/z1r0schUK3mDQLjD3Exxl3Xvd6E.PNG"
+             class="image">
+        <img alt="" src="https://mp-seoul-image-production-s3.mangoplate.com/265831/mojahp4yrtswhn.jpg" class="image">
+        <img alt="" src="https://t1.daumcdn.net/cfile/tistory/9915764D5A965F9027" class="image">
+        <img alt="" src="https://m.visitjeju.net/image/jeju_story/2_1.jpg" class="image">
+        <img alt="" src="https://www.gb.go.kr/Main/data/food/cg_story_2.jpg" class="image">
+    </div>
+    <div class="rate-container">
+        <span class="title" rel="title">코리아IT아카데미</span>
+        <span class="star-container">
+            <i class="icon filled fa-solid fa-star"></i>
+            <span class="score" rel="score">4.1</span>
+            <span class="full-score">/5</span>
+        </span>
+        <div class="button-container">
+            <a href="#" class="button" rel="favoriteButton">
+                <i class="star filled fa-solid fa-star"></i>
+                <span class="text">즐겨찾기</span>
+            </a>
+        </div>
+    </div>
+    <ul class="info-container">
+        <li class="item">
+            <i class="icon fa-solid fa-location-dot"></i>
+            <span class="text" rel="addressText">대구광역시 북구 내곡로 70</span>
+        </li>
+        <li class="item">
+            <i class="icon fa-solid fa-clock"></i>
+            <span class="text" rel="openText">00:00 부터 00:00 까지</span>
+        </li>
+        <li class="item">
+            <i class="icon fa-solid fa-phone"></i>
+            <span class="text">
+                <a class="link" href="tel:010-6811-0753" rel="contactText">010-6811-0753</a>
+            </span>
+        </li>
+        <li class="item">
+            <i class="icon fa-solid fa-house"></i>
+            <span class="text">
+                <a href="https://blah.com" class="link" rel="homepageText">https://blah.com</a>
+            </span>
+        </li>
+        <li class="item">
+            <i class="icon fa-solid fa-circle-info"></i>
+            <span class="text" rel="descriptionText">어쩌고 저쩌고</span>
+        </li>
+    </ul>
+    <div class="review-unsigned" th:if="${session.user == null}">로그인 후 리뷰를 작성할 수 있어요.</div>
+
+    <form class="review-form" id="reviewForm" th:if="${session.user != null}">
+        <input type="hidden" name="placeIndex" value="0">
+        <input type="hidden" name="score" value="0">
+        <input hidden multiple accept="image/*" name="images" type="file">
+        <span class="title">리뷰 작성</span>
+        <div class="score-container">
+            <span class="score" rel="score">-</span>
+            <span class="full-score">/5</span>
+            <div class="star-container" rel="starContainer">
+                <i class="star filled fa-solid fa-star"></i>
+                <i class="star filled fa-solid fa-star"></i>
+                <i class="star filled fa-solid fa-star"></i>
+                <i class="star filled fa-solid fa-star"></i>
+                <i class="star filled fa-solid fa-star"></i>
+            </div>
+        </div>
+        <div class="content-container">
+            <label class="label">
+                <span hidden>리뷰 내용</span>
+                <input type="text" class="input" maxlength="100" name="content" placeholder="리뷰를 작성해 주세요.">
+            </label>
+            <input class="submit-button" type="submit" value="작성">
+        </div>
+        <div class="image-container" rel="imageContainer">
+            <div class="no-image" rel="noImage">선택된 이미지가 없습니다.</div>
+        </div>
+        <a class="image-select-button" href="#" rel="imageSelectButton">이미지 선택...</a>
+    </form>
+    <ul class="review-container" rel="reviewContainer">
+        <li class="item">
+            <span class="nickname" rel="nickname">닉네임 자리</span>
+            <div class="image-container" rel="imageContainer">
+                <image alt=""
+                       src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBALHTc3BNxTQmAPl3efr7l5vRRxFMJ7J5B433051nkJLCQQ0F5yH2AjxhETMD16y3C7Q&usqp=CAU"
+                       class="image"></image>
+                <image alt="" src="https://m.yorivery.com/data/goods/20/05/21//1000000878/1000000878_detail_143.jpg"
+                       class="image"></image>
+                <image alt=""
+                       src="https://w.namu.la/s/1c8af0e99c15c7d1ea3fced509445d653797856044472a84cfcc47168bdc929e1989d2fcd8d30a960e054103b1b29c2fdae0939eecf94b0e4e03a2b39240dbad38985c8e5b057aa6787bdc1a40a38fe20e8946ca7a6f2ed33e4fe2c474905330be525c3f97199500abdd5abbef3e278f"
+                       class="image"></image>
+            </div>
+            <span class="content" rel="content">어쩌고 저쩌고</span>
+            <span class="date" rel="date">2022-01-01</span>
+        </li>
+    </ul>
+</section>
+<section class="map-container" id="mapContainer">
+    <div class="cover">지도를 불러오고 있습니다.</div>
+</section>
+<div class="login-container" id="loginContainer">
+    <iframe class="login-frame" id="loginFrame"></iframe>
+</div>
+</body>
+</html>

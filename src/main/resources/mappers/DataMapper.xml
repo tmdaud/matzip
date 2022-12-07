@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smchoi.matzip.mappers.IDataMapper">
+
+    <select id="selectPlacesVoExceptImage"
+            resultType="com.smchoi.matzip.vos.PlaceVo">
+        select place.`index`                   as `index`,
+               place.`name`                    as `name`,
+               place.address_primary           as addressPrimary,
+               place.address_secondary         as addressSecondary,
+               place.contact_first             as contactFirst,
+               place.contact_second            as contactSecond,
+               place.contact_third             as contactThird,
+               place.homepage                  as homepage,
+               place.open_from                 as openFrom,
+               place.open_to                   as openTo,
+               place.break_from                as breakFrom,
+               place.break_to                  as breakTo,
+               place.`description`             as `description`,
+               place.latitude                  as latitude,
+               place.longitude                 as longitude,
+               place.category_index            as categoryIndex,
+               place.created_on                as createdOn,
+               place.modified_on               as modifiedOn,
+               place.open_from > now()
+                   or now() > place.open_to    as isClose,
+               ifnull(place.break_from, false) as isBreakNull,
+               place.break_from > now()
+                   or now() > place.break_to   as isBreak,
+               pc.text                         as placeText,
+               avg(review.score)               as score,
+               count(review.`index`)           as reviewCount
+
+        from matzip_data.places as place
+                 left join matzip_data.place_category as pc on place.category_index = pc.`index`
+                 left join matzip_data.reviews as review on place.`index` = review.place_index
+        where latitude between #{minLat} and #{maxLat}
+          and longitude between #{minLng} and #{maxLng}
+        group by place.`index`
+    </select>
+
+    <select id="selectPlaceVoByIndex"
+            resultType="com.smchoi.matzip.vos.PlaceVo">
+        select place.`index`                   as `index`,
+               place.`name`                    as `name`,
+               place.image                     as image,
+               place.image_type                as imageType,
+               place.address_primary           as addressPrimary,
+               place.address_secondary         as addressSecondary,
+               place.contact_first             as contactFirst,
+               place.contact_second            as contactSecond,
+               place.contact_third             as contactThird,
+               place.homepage                  as homepage,
+               place.open_from                 as openFrom,
+               place.open_to                   as openTo,
+               place.break_from                as breakFrom,
+               place.break_to                  as breakTo,
+               place.`description`             as `description`,
+               place.latitude                  as latitude,
+               place.longitude                 as longitude,
+               place.category_index            as categoryIndex,
+               place.created_on                as createdOn,
+               place.modified_on               as modifiedOn,
+               place.open_from > now()
+                   or now() > place.open_to    as isClose,
+               ifnull(place.break_from, false) as isBreakNull,
+               place.break_from > now()
+                   or now() > place.break_to   as isBreak,
+               pc.text                         as placeText
+
+        from matzip_data.places as place
+                 left join matzip_data.place_category as pc on place.category_index = pc.`index`
+        where place.`index` = #{index}
+    </select>
+
+    <insert id="insertReview"
+            useGeneratedKeys="true"
+            keyColumn="index"
+            keyProperty="index"
+            parameterType="com.smchoi.matzip.entities.data.ReviewEntity">
+        insert into matzip_data.reviews (user_id, place_index, score, content)
+        values (#{userId}, #{placeIndex}, #{score}, #{content})
+    </insert>
+
+    <insert id="insertReviewImage"
+            useGeneratedKeys="true"
+            keyColumn="index"
+            keyProperty="index"
+            parameterType="com.smchoi.matzip.entities.data.ReviewImageEntity">
+        insert into matzip_data.review_images (review_index, `data`, type)
+        values (#{reviewIndex}, #{data}, #{type})
+    </insert>
+
+    <select id="selectReviewsByPlaceIndex"
+            resultType="com.smchoi.matzip.vos.ReviewVo">
+        select review.`index`     as `index`,
+               review.user_id     as userId,
+               review.place_index as placeIndex,
+               review.score       as score,
+               review.content     as content,
+               user.nickname      as userNickname
+        from matzip_data.reviews as review
+                 left join matzip_member.users as user on review.user_id = user.id
+        where review.place_index = #{placeIndex}
+        order by review.index desc
+    </select>
+
+    <select id="selectReviewsImagesByReviewIndexExceptData"
+            resultType="com.smchoi.matzip.entities.data.ReviewImageEntity">
+        select `index`      as `index`,
+               review_index as reviewIndex
+        from matzip_data.review_images
+        where review_index = #{reviewIndex}
+        order by `index`
+    </select>
+
+    <select id="selectReviewImageByIndex"
+            resultType="com.smchoi.matzip.entities.data.ReviewImageEntity">
+        select `index`      as `index`,
+               review_index as reviewIndex,
+               `data`       as `data`,
+               type         as type
+        from matzip_data.review_images
+        where `index` = #{index}
+        limit 1
+    </select>
+</mapper>
