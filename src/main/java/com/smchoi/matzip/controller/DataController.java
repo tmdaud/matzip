@@ -93,7 +93,7 @@ public class DataController {
 
     @DeleteMapping(value = "review", produces = MediaType.APPLICATION_JSON_VALUE)
     public String deleteReview() {
-        //ㅎㅎ..ㅈㅅ;;ㅋㅋ!!
+        //자랑스럽게 완성
         return null;
     }
 
