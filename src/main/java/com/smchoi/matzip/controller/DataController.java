@@ -91,4 +91,10 @@ public class DataController {
         return responseEntity;
     }
 
+    @DeleteMapping(value = "review", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String deleteReview() {
+        //ㅎㅎ..ㅈㅅ;;ㅋㅋ!!
+        return null;
+    }
+
 }
