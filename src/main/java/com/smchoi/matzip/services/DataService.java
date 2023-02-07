@@ -3,7 +3,6 @@ package com.smchoi.matzip.services;
 import com.smchoi.matzip.entities.data.ReviewEntity;
 import com.smchoi.matzip.entities.data.ReviewImageEntity;
 import com.smchoi.matzip.entities.member.UserEntity;
-import com.smchoi.matzip.enums.CommonResult;
 import com.smchoi.matzip.enums.data.AddReviewResult;
 import com.smchoi.matzip.exceptions.RollbackException;
 import com.smchoi.matzip.interfaces.IResult;
