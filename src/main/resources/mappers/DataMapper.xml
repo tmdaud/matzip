@@ -66,10 +66,9 @@
                place.open_from > now()
                    or now() > place.open_to    as isClose,
                ifnull(place.break_from, false) as isBreakNull,
-               place.break_from > now()
-                   or now() > place.break_to   as isBreak,
+               now() > place.break_from
+                   and place.break_to > now()  as isBreak,
                pc.text                         as placeText
-
         from matzip_data.places as place
                  left join matzip_data.place_category as pc on place.category_index = pc.`index`
         where place.`index` = #{index}
@@ -80,8 +79,8 @@
             keyColumn="index"
             keyProperty="index"
             parameterType="com.smchoi.matzip.entities.data.ReviewEntity">
-        insert into matzip_data.reviews (user_id, place_index, score, content)
-        values (#{userId}, #{placeIndex}, #{score}, #{content})
+        insert into matzip_data.reviews (user_id, place_index, score, content, written_on)
+        values (#{userId}, #{placeIndex}, #{score}, #{content}, IFNULL(#{writtenOn}, DEFAULT(`written_on`)))
     </insert>
 
     <insert id="insertReviewImage"
@@ -100,6 +99,7 @@
                review.place_index as placeIndex,
                review.score       as score,
                review.content     as content,
+               review.written_on  as writtenOn,
                user.nickname      as userNickname
         from matzip_data.reviews as review
                  left join matzip_member.users as user on review.user_id = user.id
@@ -126,4 +126,26 @@
         where `index` = #{index}
         limit 1
     </select>
+
+    <select id="selectReviewsByReviewIndex"
+            resultType="com.smchoi.matzip.vos.ReviewVo">
+        select `review`.`index`       AS `index`,
+               `review`.`user_id`     AS `userId`,
+               `review`.`place_index` AS `placeIndex`,
+               `review`.`score`       AS `score`,
+               `review`.`content`     AS `content`,
+               `review`.`written_on`  as writtenOn,
+               `user`.`nickname`      AS `userNickname`
+        FROM `matzip_data`.reviews AS `review`
+                 LEFT JOIN `matzip_member`.users AS `user` ON `review`.`user_id` = `user`.`id`
+        WHERE `review`.`index` = #{index}
+        ORDER BY `review`.`index` DESC
+    </select>
+
+    <delete id="deleteReview">
+        delete
+        from matzip_data.reviews
+        where `index` = #{index}
+        limit 1
+    </delete>
 </mapper>

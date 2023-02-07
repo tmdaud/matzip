@@ -1,5 +1,6 @@
 package com.smchoi.matzip.entities.data;
 
+import java.util.Date;
 import java.util.Objects;
 
 public class ReviewEntity {
@@ -8,6 +9,15 @@ public class ReviewEntity {
     private int placeIndex;
     private int score;
     private String content;
+    private Date writtenOn;
+
+    public Date getWrittenOn() {
+        return writtenOn;
+    }
+
+    public void setWrittenOn(Date writtenOn) {
+        this.writtenOn = writtenOn;
+    }
 
     public int getIndex() {
         return index;

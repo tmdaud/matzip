@@ -19,6 +19,15 @@ detailContainer.show = (placeObject) => {
     const contact = `${placeObject['contactFirst']}-${placeObject['contactSecond']}-${placeObject['contactThird']}`
     detailContainer.querySelector('[rel="contactText"]').innerText = contact;
     detailContainer.querySelector('[rel="contactText"]').setAttribute('href', `tel:${contact}`);
+
+    detailContainer.querySelector('[rel="detailImage"]').setAttribute('src', `./data/placeImage?pi=${placeObject['index']}`);
+
+    if (placeObject['reviewCount'] === 0) {
+        detailContainer.querySelector('.no-review').classList.add('visible');
+    }else{
+        detailContainer.querySelector('.no-review').classList.remove('visible');
+    }
+
     const homepageTextElement = detailContainer.querySelector('[rel="homepageText"]');
     if (placeObject['homepage']) {
         homepageTextElement.innerText = placeObject['homepage'];
@@ -109,7 +118,10 @@ const loadPlaces = (ne, sw) => {
                                     <span class="hour">${placeObject['close'] === true ? `${placeObject['openFrom']}에 영업 시작`
                         : `${placeObject['breakFrom'] !== null ? `${placeObject['breakFrom']}-${placeObject['breakTo']} 브레이크타임` : `${placeObject['openTo']}에 영업 종료`}`}</span>
                                 </span>
-                                <span class="address-container">${placeObject['addressPrimary']} ${placeObject['addressSecondary']}</span>
+                                <span class="address-container">
+                                ${placeObject['addressPrimary']} <br>
+                                ${placeObject['addressSecondary']}
+                                </span>
                                 <span class="contact">${placeObject['contactFirst']}-${placeObject['contactSecond']}-${placeObject['contactThird']}</span>
                             </span>
                             <img alt="" class="image" src="./data/placeImage?pi=${placeObject['index']}">
@@ -132,6 +144,11 @@ const loadPlaces = (ne, sw) => {
     xhr.send();
 };
 
+const listInfo = document.querySelectorAll('.item')[6]
+listInfo.addEventListener('click', () => {
+    listInfo.querySelector('.text').style.whiteSpace = 'normal';
+});
+
 
 navigator.geolocation.getCurrentPosition(e => {
     loadMap(e['coords']['latitude'], e['coords']['longitude']); //성공시
@@ -150,7 +167,7 @@ searchForm['keyword'].addEventListener('input', () => {
             item.classList.remove('visible');
         }
     }
-})
+});
 
 loginButton?.addEventListener('click', e => {
     e.preventDefault();
@@ -170,15 +187,74 @@ const loadReviews = (placeIndex) => {
             if (xhr.status >= 200 && xhr.status < 300) {
                 const responseArray = JSON.parse(xhr.responseText);
                 for (const reviewObject of responseArray) {
+                    function writtenTime(reviewObject) {
+                        const today = new Date();
+                        const timeValue = new Date(`${reviewObject['writtenOn']}`);
+
+                        const betweenTime = Math.floor((today.getTime() - timeValue.getTime()) / 1000 / 60);
+                        if (betweenTime < 1) {
+                            return '방금전';
+                        }
+                        if (betweenTime < 60) {
+                            return `${betweenTime}분전`;
+                        }
+
+                        const betweenTimeHour = Math.floor(betweenTime / 60);
+                        if (betweenTimeHour < 24) {
+                            return `${betweenTimeHour}시간전`;
+                        }
+
+                        const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
+                        if (betweenTimeDay < 365) {
+                            return `${betweenTimeDay}일전`;
+                        }
+
+                        return `${Math.floor(betweenTimeDay / 365)}년전`;
+                    }
+
                     const itemHtml = `
                         <li class="item" rel="items">
                             <span class="nickname" rel="nickname">${reviewObject['userNickname']}</span>
                             <div class="image-container" rel="imageContainer"></div>
                             <span class="content" rel="content">${reviewObject['content']}</span>
-                            <span class="date" rel="date">데이터 없음</span>
+                            <span class="date" rel="date">${writtenTime(reviewObject)}
+                            <span class="delete-review">삭제</span>
+                            </span>
                         </li>`;
                     const itemElement = new DOMParser().parseFromString(itemHtml, 'text/html').querySelector('[rel="items"]');
+
+                    //리뷰 삭제
+                    itemElement.querySelector('.delete-review').addEventListener('click', e => {
+                        e.preventDefault();
+                        if (!confirm('정말로 리뷰을 삭제할까요?')) {
+                            return false;
+                        }
+                        const xhr = new XMLHttpRequest();
+                        const formData = new FormData();
+                        formData.append('reviewIndex',reviewObject['index']);
+                        xhr.open('DELETE', './data/review');
+                        xhr.onreadystatechange = () => {
+                            if (xhr.readyState === XMLHttpRequest.DONE) {
+                                if (xhr.status >= 200 && xhr.status < 300) {
+                                    const responseObject = JSON.parse(xhr.responseText);
+                                    switch (responseObject['result']) {
+                                        case 'success':
+                                            loadReviews(reviewForm['placeIndex'].value);
+                                            break;
+                                        default:
+                                            alert('알 수 없는 이유로 댓글을 삭제하지 못했습니다.\n\n잠시 후 다시 시도해 주세요.');
+                                    }
+                                } else {
+                                    alert('서버와 통신하지 못하였습니다.\n\n잠시 후 다시 시도해 주세요.');
+                                }
+                            }
+                        };
+                        xhr.send(formData);
+                    });
+
+
                     const imageContainerElement = itemElement.querySelector('[rel="imageContainer"]');
+
                     if (reviewObject['imageIndexes'].length > 0) {
                         for (const imageIndex of reviewObject['imageIndexes']) {
                             const imageElement = document.createElement('img');
@@ -187,6 +263,14 @@ const loadReviews = (placeIndex) => {
                             imageElement.classList.add('image');
                             imageContainerElement.append(imageElement);
                         }
+
+                        // for (const imageIndex of reviewObject['imageIndexes']) {
+                        //     const imageElement = document.createElement('img');
+                        //     imageElement.setAttribute('alt', '');
+                        //     imageElement.setAttribute('src', `./data/reviewImage?index=${imageIndex}`);
+                        //     imageElement.classList.add('image');
+                        //     detailContainer.querySelector('.image-div').append(imageElement);
+                        // }
                     } else {
                         imageContainerElement.remove();
                     }
@@ -219,7 +303,6 @@ if (reviewForm) {
             reviewForm['score'].value = i + 1;
         });
     }
-    ;
 
 
     reviewForm['images'].addEventListener('input', e => {
@@ -268,6 +351,12 @@ if (reviewForm) {
                             alert('로그인되어있지 않습니다. 로그인 후 다시 시도해 주세요.');
                             break;
                         case 'success':
+                            reviewForm['content'].value = "";
+                            reviewStarArray.forEach(x => x.classList.remove('selected'));
+                            reviewForm.querySelector('[rel="score"]').innerText = "-";
+                            reviewForm.querySelectorAll('img.image').forEach(x => x.remove());
+                            reviewForm.querySelector('[rel="noImage"]').classList.remove('hidden');
+                            detailContainer.querySelector('.no-review').classList.remove('visible');
                             loadReviews(reviewForm['placeIndex'].value);
                             alert('리뷰 작성 완료');
                             break;

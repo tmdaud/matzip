@@ -1,6 +1,5 @@
 package com.smchoi.matzip.services;
 
-import com.smchoi.matzip.entities.data.PlaceEntity;
 import com.smchoi.matzip.entities.data.ReviewEntity;
 import com.smchoi.matzip.entities.data.ReviewImageEntity;
 import com.smchoi.matzip.entities.member.UserEntity;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 @Service(value = "com.smchoi.matzip.services.DataService")
@@ -73,5 +71,24 @@ public class DataService {
 
     public ReviewImageEntity getReviewImage(int index) {
         return this.dataMapper.selectReviewImageByIndex(index);
+    }
+
+//    public Enum<? extends IResult> deleteReview(int reviewIndex) {
+//
+//        return this.dataMapper.deleteReview(reviewIndex) > 0
+//                ? CommonResult.SUCCESS
+//                : CommonResult.FAILURE;
+//    }
+
+    public Enum<? extends IResult> deleteReview(Integer reviewIndex) {
+        ReviewVo existingReview = this.dataMapper.selectReviewsByReviewIndex(reviewIndex);
+        if (existingReview == null) {
+            return AddReviewResult.FAILURE;
+        }
+        System.out.println(reviewIndex);
+
+        return this.dataMapper.deleteReview(reviewIndex) > 0
+                ? AddReviewResult.SUCCESS
+                : AddReviewResult.FAILURE;
     }
 }

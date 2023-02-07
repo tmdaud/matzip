@@ -13,3 +13,8 @@ body {
     margin: unset;
     position: absolute;
 }
+
+p {
+    margin: 0;
+    padding: 0;
+}

@@ -1,6 +1,5 @@
 package com.smchoi.matzip.mappers;
 
-import com.smchoi.matzip.entities.data.PlaceEntity;
 import com.smchoi.matzip.entities.data.ReviewEntity;
 import com.smchoi.matzip.entities.data.ReviewImageEntity;
 import com.smchoi.matzip.vos.PlaceVo;
@@ -27,4 +26,8 @@ public interface IDataMapper {
     ReviewImageEntity[] selectReviewsImagesByReviewIndexExceptData(@Param(value = "reviewIndex") int reviewIndex);
 
     ReviewImageEntity selectReviewImageByIndex(@Param(value = "index") int index);
+
+    int deleteReview(@Param(value = "index") int index);
+
+    ReviewVo selectReviewsByReviewIndex(@Param(value = "index") int index);
 }
