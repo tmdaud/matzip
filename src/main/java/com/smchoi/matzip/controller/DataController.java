@@ -1,6 +1,5 @@
 package com.smchoi.matzip.controller;
 
-import com.smchoi.matzip.entities.data.PlaceEntity;
 import com.smchoi.matzip.entities.data.ReviewEntity;
 import com.smchoi.matzip.entities.data.ReviewImageEntity;
 import com.smchoi.matzip.entities.member.UserEntity;
@@ -9,7 +8,6 @@ import com.smchoi.matzip.exceptions.RollbackException;
 import com.smchoi.matzip.services.DataService;
 import com.smchoi.matzip.vos.PlaceVo;
 import com.smchoi.matzip.vos.ReviewVo;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -33,9 +31,9 @@ public class DataController {
 
     @GetMapping(value = "place", produces = MediaType.APPLICATION_JSON_VALUE)
     public PlaceVo[] getPlace(@RequestParam(value = "minLat") double minLat,
-                                  @RequestParam(value = "minLng") double minLng,
-                                  @RequestParam(value = "maxLat") double maxLat,
-                                  @RequestParam(value = "maxLng") double maxLng) {
+                              @RequestParam(value = "minLng") double minLng,
+                              @RequestParam(value = "maxLat") double maxLat,
+                              @RequestParam(value = "maxLng") double maxLng) {
 //        return this.dataService.getPlaces(minLat, minLng, maxLat, maxLng);
         return this.dataService.getPlacesVo(minLat, minLng, maxLat, maxLng);
     }
@@ -91,10 +89,22 @@ public class DataController {
         return responseEntity;
     }
 
-    @DeleteMapping(value = "review", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String deleteReview() {
-        //자랑스럽게 완성
-        return null;
+    @RequestMapping(value = "review",
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String deleteReview( @RequestParam(value = "reviewIndex", required = false) Integer reviewIndex ) {
+
+        ReviewVo review = new ReviewVo();
+        JSONObject responseObject = new JSONObject();
+        Enum<?> result = this.dataService.deleteReview(reviewIndex);
+        responseObject.put("result", result.name().toLowerCase());
+
+        if (result == AddReviewResult.SUCCESS) {
+            responseObject.put("reviewIndex", review.getIndex());
+        }
+        return responseObject.toString();
     }
+
 
 }
