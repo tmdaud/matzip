@@ -31,7 +31,7 @@ public class MemberService {
                 StringBuilder requestBuilder = new StringBuilder();
                 requestBuilder.append("grant_type=authorization_code");
                 requestBuilder.append("&client_id=137cbbb98ac38f2199a20dd210d752d8");
-                requestBuilder.append("&redirect_uri=http://localhost:8080/member/kakao");
+                requestBuilder.append("&redirect_uri=https://matzip.myung.dev/member/kakao");
                 requestBuilder.append("&code=").append(code);
                 bufferedWriter.write(requestBuilder.toString());
                 bufferedWriter.flush();

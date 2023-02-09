@@ -172,7 +172,7 @@ searchForm['keyword'].addEventListener('input', () => {
 loginButton?.addEventListener('click', e => {
     e.preventDefault();
     loginContainer.classList.add('visible');
-    window.open("https://kauth.kakao.com/oauth/authorize?client_id=137cbbb98ac38f2199a20dd210d752d8&redirect_uri=http://localhost:8080/member/kakao&response_type=code", '로그인', 'width=500; height=750;');
+    window.open("https://kauth.kakao.com/oauth/authorize?client_id=137cbbb98ac38f2199a20dd210d752d8&redirect_uri=https://matzip.myung.dev/member/kakao&response_type=code", '로그인', 'width=500; height=750;');
 
 });
 
@@ -240,6 +240,7 @@ const loadReviews = (placeIndex) => {
                                     switch (responseObject['result']) {
                                         case 'success':
                                             loadReviews(reviewForm['placeIndex'].value);
+                                            loadPlaces();
                                             break;
                                         default:
                                             alert('알 수 없는 이유로 댓글을 삭제하지 못했습니다.\n\n잠시 후 다시 시도해 주세요.');
@@ -323,11 +324,11 @@ if (reviewForm) {
     });
 
     reviewForm.onsubmit = e => {
-        if (reviewForm['score'] === '0') {
+        if (reviewForm['score'].value === '0') {
             alert('별점을 선택해 주세요.');
             return false;
         }
-        if (reviewForm['content'] === '') {
+        if (reviewForm['content'].value === '') {
             alert('내용을 입력해 주세요.');
             reviewForm['content'].focus();
             return false;
@@ -351,20 +352,22 @@ if (reviewForm) {
                             alert('로그인되어있지 않습니다. 로그인 후 다시 시도해 주세요.');
                             break;
                         case 'success':
-                            reviewForm['content'].value = "";
+                            reviewForm['content'].value = '';
                             reviewStarArray.forEach(x => x.classList.remove('selected'));
                             reviewForm.querySelector('[rel="score"]').innerText = "-";
                             reviewForm.querySelectorAll('img.image').forEach(x => x.remove());
                             reviewForm.querySelector('[rel="noImage"]').classList.remove('hidden');
                             detailContainer.querySelector('.no-review').classList.remove('visible');
+                            reviewForm.reset();
                             loadReviews(reviewForm['placeIndex'].value);
+                            loadPlaces();
                             alert('리뷰 작성 완료');
                             break;
                         default:
                             alert('알 수 없는 이유로 리뷰를 작성하지 못하였습니다. 잠시 후 다시 시도해 주세요.')
                     }
                 } else {
-                    alert('서버와 통신하지 못하였습니다. 잠시 후 다시 시도해 주세요.')
+                    alert('별점과 리뷰를 작성해주세요.')
                 }
             }
         };

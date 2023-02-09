@@ -19,7 +19,7 @@
             <input autofocus class="input" maxlength="100" name="keyword" placeholder="맛집을 검색해 보세요." type="text">
         </label>
         <div class="button-container">
-            <a href="https://kauth.kakao.com/oauth/authorize?client_id=137cbbb98ac38f2199a20dd210d752d8&redirect_uri=http://localhost:8080/member/kakao&response_type=code"
+            <a href="https://kauth.kakao.com/oauth/authorize?client_id=137cbbb98ac38f2199a20dd210d752d8&redirect_uri=https://matzip.myung.dev/member/kakao&response_type=code"
                target="_blank" class="button" id="loginButton" th:if="${session.user == null}">로그인</a>
             <a class="button" id="logoutButton"
                th:href="@{'/member/logout'}"
@@ -52,7 +52,7 @@
                 <span class="address-container">대구 북구 팔거천동로24길 40 102동 1412호</span>
                 <span class="contact">010-6405-6966</span>
             </span>
-            <img alt="ss" class="image" th:src="@{/resources/images/stonesh.jpg}">
+            <img alt="ss" class="image" src="">
         </li>
         <li class="item">
             <span class="info">
@@ -79,7 +79,7 @@
                 <span class="address-container">대구 북구 팔거천동로24길 40 102동 1412호</span>
                 <span class="contact">010-6405-6966</span>
             </span>
-            <img alt="ss" class="image" th:src="@{/resources/images/stonesh.jpg}">
+            <img alt="ss" class="image" src="">
         </li>
     </ul>
 </section>
@@ -192,7 +192,7 @@
     <div class="cover">지도를 불러오고 있습니다.</div>
 </section>
 <div class="login-container" id="loginContainer">
-    <iframe class="login-frame" id="loginFrame"></iframe>
+<!--    <iframe class="login-frame" id="loginFrame"></iframe>-->
 </div>
 </body>
 </html>
